@@ -4,6 +4,7 @@ import (
     "os"
     "net"
     "fmt"
+    "flag"
     "strings"
     "./logix/util"
     "./logix/syslog"
@@ -11,20 +12,15 @@ import (
     "github.com/kless/goconfig/config"
 )
 
-/*
-[transport]
-url = amqp://127.0.0.1:5672
-queue = logix
 
-[server]
-bind_addr = 127.0.0.1:6660
- */
-
-var Cfg *config.Config
-var queue string
 var uri string
+var queue string
+var Cfg *config.Config
+var user = flag.String("u", "logix", "username")
+var debug = flag.Bool("d", false, "debug")
 
 func main(){
+    flag.Parse()
     var err error
     config_file := os.Getenv("LOGIX_CONF")
     if (strings.TrimSpace(config_file) == ""){
@@ -58,7 +54,17 @@ func main(){
 func handle_data(data string){
     parsed := syslog.ParseLog(data)
     var conn broker.Connection
+    if (*debug == true) {
+        fmt.Printf("Received log %s\n", data)
+        fmt.Printf("Connecting to Broker %s\n", uri)
+    }
     conn = conn.Dial(uri)
+    if (*debug == true) {
+        fmt.Printf("Setup queue %s\n", queue)
+    }
     conn = conn.SetupBroker(queue)
+    if (*debug == true) {
+        fmt.Printf("Sending data %s\n", parsed)
+    }
     conn.Send(parsed)
 }

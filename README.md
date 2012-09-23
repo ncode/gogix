@@ -37,14 +37,11 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
 ### logix.conf
 
     [transport]
-    connection_pool_enabled = False
-    connection_pool_size = 10
     url = amqp://127.0.0.1:5672
     queue = logix
 
     [server]
     port = 6660
-    max_syslog_line_size = 1023
     bind_addr = 127.0.0.1
 
 ### on MacOS X:
@@ -66,9 +63,8 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
     $   -h help
     $   -u username
     $   -d debug
-    $   -a <start|stop|status|foreground>
 
-    $ LOGIX_CONF=src/etc/logix.conf src/bin/logix -u $USER -a foreground -d &
+    $ LOGIX_CONF=src/etc/logix.conf src/bin/logix -u $USER -d &
     $ logger test
 
 ## Depends:
