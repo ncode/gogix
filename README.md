@@ -56,18 +56,27 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
     *.*  @127.0.0.1:6660
     $ /etc/init.d/rsyslog restart
 
+### Building
+
+    $ git clone git@github.com:ncode/gogix.git
+    $ cd gogix/source
+    $ go get github.com/streadway/amqp
+    $ go get github.com/kless/goconfig/config
+    $ go build -o logix-server
+
 ### Running:
 
-    $ Usage: ./logix
+    $ Usage: ./logix-server
     $   -h help
     $   -u username
     $   -d debug
 
-    $ LOGIX_CONF=src/etc/logix.conf src/bin/logix -u $USER -d &
+    $ LOGIX_CONF=config/logix.conf ./logix-server -u $USER -d &
     $ logger test
 
 ## Depends:
 * amqp - https://github.com/streadway/amqp
+* gocofig - https://github.com/kless/goconfig
 
 ## Todo
 * would benefit of an internal backlog queue
