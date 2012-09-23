@@ -12,7 +12,6 @@ import (
     "github.com/kless/goconfig/config"
 )
 
-
 var uri string
 var queue string
 var Cfg *config.Config
