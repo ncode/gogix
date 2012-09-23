@@ -41,8 +41,7 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
     queue = logix
 
     [server]
-    port = 6660
-    bind_addr = 127.0.0.1
+    bind_addr = 127.0.0.1:6660
 
 ### on MacOS X:
 
