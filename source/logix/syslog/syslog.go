@@ -2,6 +2,7 @@ package syslog
 
 import (
     "time"
+    "fmt"
     "regexp"
     "../../logix/util"
     "strconv"
@@ -30,7 +31,7 @@ func ParseLog(line string) Parser {
     lvl := LvlRegex.FindStringSubmatch(line)
     if len(lvl) >= 2 {
         i, err := strconv.Atoi(lvl[1])
-        util.Checkp(err)
+        util.CheckPanic(err, fmt.Sprintf("Unable to convert %s to int", i))
         parsed.facility = Facility[i/8]
         parsed.level = Severity[i%8]
         parsed.short_message = lvl[2]

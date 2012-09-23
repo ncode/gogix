@@ -1,17 +1,17 @@
 package util
 
 import (
+    "fmt"
     "log"
+    "github.com/kless/goconfig/config"
 )
 
-func Checkp(err error) {
-    if err != nil {
-        panic(err)
-    }
-}
+var Cfg *config.Config
 
-func Checkl(err error) {
-    if err != nil {
-        log.Fatal(err)
-    }
+func CheckPanic(err error, message string) {
+  if err != nil {
+    msg := fmt.Sprintf("%s: %s", message, err)
+    log.Fatalln(msg)
+    panic(fmt.Sprintf(msg))
+  }
 }
