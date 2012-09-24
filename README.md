@@ -59,7 +59,7 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
 ### Building
 
     $ git clone git@github.com:ncode/gogix.git
-    $ cd gogix/source
+    $ cd gogix/src
     $ go get github.com/streadway/amqp
     $ go get github.com/kless/goconfig/config
     $ go build -o logix-server
