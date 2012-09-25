@@ -82,4 +82,4 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
 * would benefit of an internal backlog queue
 
 ## Status
-* Experimental use, it is not full port yet
+* Full ported
