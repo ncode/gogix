@@ -64,6 +64,13 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
     $ go get github.com/kless/goconfig/config
     $ go build -o logix-server
 
+### Building package on Debian and Ubuntu
+
+    $ apt-get install golang
+    $ git clone git@github.com:ncode/gogix.git
+    $ cd gogix
+    $ dpkg-buildpackage -us -uc -rfakeroot
+
 ### Running:
 
     $ Usage: ./logix-server
