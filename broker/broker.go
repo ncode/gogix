@@ -21,11 +21,11 @@ func (self Connection) Dial(uri string) Connection {
 	return self
 }
 
-func (self Connection) SetupBroker(queue string, message_ttl int) Connection {
+func (self Connection) SetupBroker(queue string, message_ttl int64) Connection {
 	pub, err := self.conn.Channel()
 	util.CheckPanic(err, "Unable to acquire channel")
 	self.pub = pub
-    opts = Table{"x-message-ttl": int32(message_ttl)}
+    opts := amqp.Table{"x-message-ttl": int32(message_ttl)}
 	_, err = self.pub.QueueDeclare(queue, true, false, false, false, opts)
 	util.CheckPanic(err, "Unable to declare queue")
 	self.queue = queue

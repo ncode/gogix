@@ -35,7 +35,7 @@ func main() {
 	util.CheckPanic(err, "Unable to get queue from gogix.conf")
 	uri, err = Cfg.GetString("transport", "uri")
 	util.CheckPanic(err, "Unable to get transport from gogix.conf")
-	message_ttl, err = Cfg.GetString("transport", "message_ttl")
+	message_ttl, err := Cfg.GetInt64("transport", "message_ttl")
 	util.CheckPanic(err, "Unable to get message_ttl from gogix.conf")
 
 	addr, err := net.ResolveUDPAddr("udp", bind_addr)
@@ -52,7 +52,7 @@ func main() {
 	}
 }
 
-func handle_data(data string) {
+func handle_data(data string, message_ttl int64) {
 	parsed := syslog.ParseLog(data)
 	var conn broker.Connection
 	if *debug == true {
