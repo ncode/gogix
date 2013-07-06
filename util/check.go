@@ -2,7 +2,7 @@ package util
 
 import (
 	"fmt"
-	"github.com/kless/goconfig/config"
+	"github.com/msbranco/goconfig"
 	"log"
 	"log/syslog"
 )

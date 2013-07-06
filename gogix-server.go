@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/gogix/gogix/broker"
-	"./gogix/syslog"
-	"./gogix/util"
+	"github.com/gogix/broker"
+	"github.com/gogix/syslog"
+	"github.com/gogix/util"
 	"flag"
 	"fmt"
-	"github.com/kless/goconfig/config"
+	"github.com/msbranco/goconfig"
 	"net"
 	"os"
 	"strings"
@@ -21,7 +21,7 @@ var debug = flag.Bool("d", false, "debug")
 func main() {
 	flag.Parse()
 	var err error
-	config_file := os.Getenv("LOGIX_CONF")
+	config_file := os.Getenv("GOGIX_CONF")
 	if strings.TrimSpace(config_file) == "" {
 		config_file = "/etc/gogix/gogix.conf"
 	}

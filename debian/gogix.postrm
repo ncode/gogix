@@ -3,8 +3,8 @@
 set -e
 
 if [ "$1" = "purge" ] ; then
-    update-rc.d logix remove >/dev/null
-    userdel logix >/dev/null 2>&1 || true
-    groupdel logix >/dev/null 2>&1 || true
+    update-rc.d gogix remove >/dev/null
+    userdel gogix >/dev/null 2>&1 || true
+    groupdel gogix >/dev/null 2>&1 || true
     invoke-rc.d rsyslog start || exit $?
 fi
