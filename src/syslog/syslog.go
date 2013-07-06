@@ -1,7 +1,7 @@
 package syslog
 
 import (
-	"../../logix/util"
+	"../../gogix/util"
 	"fmt"
 	"regexp"
 	"strconv"

@@ -1,8 +1,8 @@
 package broker
 
 import (
-	"../../logix/syslog"
-	"../../logix/util"
+	"../../gogix/syslog"
+	"../../gogix/util"
 	"encoding/json"
 	"github.com/streadway/amqp"
 	"time"

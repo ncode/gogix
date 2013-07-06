@@ -12,7 +12,7 @@ var Cfg *config.Config
 func CheckPanic(err error, message string) {
 	if err != nil {
 		msg := fmt.Sprintf("%s: %s", message, err)
-		_log, err := syslog.New(syslog.LOG_ERR, "logix")
+		_log, err := syslog.New(syslog.LOG_ERR, "gogix")
 		if err != nil {
 			log.Fatalln("Unable to write syslog message")
 		}

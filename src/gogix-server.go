@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./logix/broker"
-	"./logix/syslog"
-	"./logix/util"
+	"./gogix/broker"
+	"./gogix/syslog"
+	"./gogix/util"
 	"flag"
 	"fmt"
 	"github.com/kless/goconfig/config"
@@ -15,7 +15,7 @@ import (
 var uri string
 var queue string
 var Cfg *config.Config
-var user = flag.String("u", "logix", "username")
+var user = flag.String("u", "gogix", "username")
 var debug = flag.Bool("d", false, "debug")
 
 func main() {
@@ -23,18 +23,18 @@ func main() {
 	var err error
 	config_file := os.Getenv("LOGIX_CONF")
 	if strings.TrimSpace(config_file) == "" {
-		config_file = "/etc/logix/logix.conf"
+		config_file = "/etc/gogix/gogix.conf"
 	}
 
 	Cfg, err = config.ReadDefault(config_file)
 	util.CheckPanic(err, "File not found")
 
 	bind_addr, err := Cfg.String("server", "bind_addr")
-	util.CheckPanic(err, "Unable to get bind_addr from logix.conf")
+	util.CheckPanic(err, "Unable to get bind_addr from gogix.conf")
 	queue, err = Cfg.String("transport", "queue")
-	util.CheckPanic(err, "Unable to get queue from logix.conf")
+	util.CheckPanic(err, "Unable to get queue from gogix.conf")
 	uri, err = Cfg.String("transport", "uri")
-	util.CheckPanic(err, "Unable to get transport from logix.conf")
+	util.CheckPanic(err, "Unable to get transport from gogix.conf")
 
 	addr, err := net.ResolveUDPAddr("up4", bind_addr)
 	util.CheckPanic(err, "Unable to resolve bind address")
