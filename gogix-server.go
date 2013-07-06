@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/gogix/broker"
-	"github.com/gogix/syslog"
-	"github.com/gogix/util"
+	"github.com/ncode/gogix/broker"
+	"github.com/ncode/gogix/syslog"
+	"github.com/ncode/gogix/util"
 	"flag"
 	"fmt"
 	"github.com/msbranco/goconfig"
@@ -14,7 +14,7 @@ import (
 
 var uri string
 var queue string
-var Cfg *config.Config
+var Cfg *goconfig.ConfigFile
 var user = flag.String("u", "gogix", "username")
 var debug = flag.Bool("d", false, "debug")
 
@@ -26,17 +26,19 @@ func main() {
 		config_file = "/etc/gogix/gogix.conf"
 	}
 
-	Cfg, err = config.ReadDefault(config_file)
+	Cfg, err = goconfig.ReadConfigFile(config_file)
 	util.CheckPanic(err, "File not found")
 
-	bind_addr, err := Cfg.String("server", "bind_addr")
+	bind_addr, err := Cfg.GetString("server", "bind_addr")
 	util.CheckPanic(err, "Unable to get bind_addr from gogix.conf")
-	queue, err = Cfg.String("transport", "queue")
+	queue, err = Cfg.GetString("transport", "queue")
 	util.CheckPanic(err, "Unable to get queue from gogix.conf")
-	uri, err = Cfg.String("transport", "uri")
+	uri, err = Cfg.GetString("transport", "uri")
 	util.CheckPanic(err, "Unable to get transport from gogix.conf")
+	message_ttl, err = Cfg.GetString("transport", "message_ttl")
+	util.CheckPanic(err, "Unable to get message_ttl from gogix.conf")
 
-	addr, err := net.ResolveUDPAddr("up4", bind_addr)
+	addr, err := net.ResolveUDPAddr("udp", bind_addr)
 	util.CheckPanic(err, "Unable to resolve bind address")
 
 	l, err := net.ListenUDP("udp", addr)
@@ -46,7 +48,7 @@ func main() {
 		recv := make([]byte, 1024)
 		_, _, err := l.ReadFromUDP(recv)
 		util.CheckPanic(err, "Problem receiving data")
-		go handle_data(string(recv))
+		go handle_data(string(recv), message_ttl)
 	}
 }
 
@@ -61,7 +63,7 @@ func handle_data(data string) {
 	if *debug == true {
 		fmt.Printf("Setup queue %s\n", queue)
 	}
-	conn = conn.SetupBroker(queue)
+	conn = conn.SetupBroker(queue, message_ttl)
 	if *debug == true {
 		fmt.Printf("Sending data %s\n", parsed)
 	}

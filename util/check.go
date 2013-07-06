@@ -2,12 +2,9 @@ package util
 
 import (
 	"fmt"
-	"github.com/msbranco/goconfig"
 	"log"
 	"log/syslog"
 )
-
-var Cfg *config.Config
 
 func CheckPanic(err error, message string) {
 	if err != nil {

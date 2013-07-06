@@ -1,7 +1,7 @@
 package syslog
 
 import (
-	"../../gogix/util"
+	"github.com/ncode/gogix/util"
 	"fmt"
 	"regexp"
 	"strconv"
