@@ -1,7 +1,7 @@
 package main
 
 import (
-	"./gogix/broker"
+	"github.com/gogix/gogix/broker"
 	"./gogix/syslog"
 	"./gogix/util"
 	"flag"
