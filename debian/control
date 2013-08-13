@@ -3,12 +3,12 @@ Section: net
 Priority: extra
 Replaces: gogix
 Maintainer: Juliano Martinez <juliano.martinez@locaweb.com.br>
-Build-Depends: debhelper (>= 7.0.50~)
+Build-Depends: debhelper (>= 7.0.50~), golang-go
 Standards-Version: 3.8.4
 Homepage: https://github.com/ncode/gogix
 
 Package: gogix
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, golang
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: transports your local syslog to Graylog2 via AMQP
  transports your local syslog to Graylog2 via AMQP
