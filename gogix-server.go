@@ -48,10 +48,11 @@ func main() {
 		fmt.Printf("Connecting to Broker %s\n", uri)
 	}
 	conn = conn.Dial(uri)
-	conn = conn.SetupBroker(queue, message_ttl)
+
 	if *debug == true {
-		fmt.Printf("Setting queue %s\n", queue)
+		fmt.Printf("Setting-up queue %s\n", queue)
 	}
+	conn = conn.SetupBroker(queue, message_ttl)
 
 	for {
 		recv := make([]byte, 1024)
