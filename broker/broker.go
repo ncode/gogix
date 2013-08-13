@@ -35,7 +35,7 @@ func (self Connection) SetupBroker(queue string, message_ttl string) Connection 
 
 func (self Connection) Send(parsed syslog.Parser) {
 	encoded, err := json.Marshal(parsed)
-	utils.CheckPanic(err, "Unable to encode json")
+	utils.Check(err, "Unable to encode json")
 	msg := amqp.Publishing{
 		DeliveryMode: amqp.Persistent,
 		Timestamp:    time.Now(),
@@ -45,6 +45,9 @@ func (self Connection) Send(parsed syslog.Parser) {
 	}
 
 	err = self.pub.Publish("", self.queue, false, false, msg)
-	utils.CheckPanic(err, "Unable to publish message")
+	utils.Check(err, "Unable to publish message")
+}
+
+func (self Connection) Close() {
 	defer self.conn.Close()
 }
