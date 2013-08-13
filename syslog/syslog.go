@@ -1,8 +1,8 @@
 package syslog
 
 import (
-	"github.com/ncode/gogix/utils"
 	"fmt"
+	"github.com/ncode/gogix/utils"
 	"regexp"
 	"strconv"
 	"time"
@@ -33,7 +33,7 @@ func ParseLog(line string) Parser {
 	lvl := LvlRegex.FindStringSubmatch(line)
 	if len(lvl) >= 2 {
 		i, err := strconv.Atoi(lvl[1])
-		utils.CheckPanic(err, fmt.Sprintf("Unable to convert %s to int", i))
+		utils.Check(err, fmt.Sprintf("Unable to convert %s to int", i))
 		parsed.facility = Facility[i/8]
 		parsed.level = Severity[i%8]
 		parsed.short_message = lvl[2]
