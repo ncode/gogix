@@ -35,7 +35,6 @@ func (self Connection) SetupBroker(queue string, message_ttl string) Connection 
 }
 
 func (self Connection) Send(parsed syslog.Parser) {
-	fmt.Printf("%s\n", parsed)
 	encoded, err := json.Marshal(parsed)
 	utils.Check(err, "Unable to encode json")
 	msg := amqp.Publishing{

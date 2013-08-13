@@ -65,7 +65,6 @@ func main() {
 }
 
 func handle_data(data string, message_ttl string, conn broker.Connection) {
-
 	if *debug == true {
 		fmt.Printf("Received log %s\n", data)
 	}

@@ -11,7 +11,7 @@ import (
 
 type Parser struct {
 	Host         string  `json:"host"`
-	Timestamp    float64 `json:"timestamp"`
+	Timestamp    int64   `json:"timestamp"`
 	Facility     string  `json:"facility"`
 	Level        string  `json:"level"`
 	Version      float64 `json:"version"`
@@ -29,7 +29,7 @@ var LvlRegex = regexp.MustCompile("^<(.+?)>([A-Za-z]{3} .*)")
 func ParseLog(line string) Parser {
 	parsed := Parser{}
 	now := time.Now()
-	parsed.Timestamp = float64(now.Unix())
+	parsed.Timestamp = now.Unix()
 	parsed.Version = 1.0
 	lvl := LvlRegex.FindStringSubmatch(line)
 	if len(lvl) >= 2 {
