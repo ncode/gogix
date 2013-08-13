@@ -10,12 +10,12 @@ import (
 )
 
 type Parser struct {
-	Host          string
-	Timestamp     float64
-	Facility      string
-	Level         string
-	Version       float64
-	Short_message string
+	Host         string  `json:"host"`
+	Timestamp    float64 `json:"timestamp"`
+	Facility     string  `json:"facility"`
+	Level        string  `json:"level"`
+	Version      float64 `json:"version"`
+	ShortMessage string  `json:"shot_manage"`
 }
 
 var Severity = []string{"emerg", "alert", "crit", "err", "warn", "notice", "info", "debug"}
@@ -37,11 +37,11 @@ func ParseLog(line string) Parser {
 		utils.Check(err, fmt.Sprintf("Unable to convert %s to int", i))
 		parsed.Facility = Facility[i/8]
 		parsed.Level = Severity[i%8]
-		parsed.Short_message = strings.Trim(lvl[2], "\u0000")
+		parsed.ShortMessage = strings.Trim(lvl[2], "\u0000")
 	} else {
 		parsed.Facility = "syslog"
 		parsed.Level = "info"
-		parsed.Short_message = strings.Trim(line, "\u0000")
+		parsed.ShortMessage = strings.Trim(line, "\u0000")
 	}
 	return parsed
 }
