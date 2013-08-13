@@ -27,8 +27,7 @@ func (self Connection) SetupBroker(queue string, message_ttl string) Connection 
 	utils.CheckPanic(err, "Unable to acquire channel")
 	self.pub = pub
 	self.expiration = message_ttl
-	opts := amqp.Table{}
-	_, err = self.pub.QueueDeclare(queue, true, false, false, false, opts)
+	_, err = self.pub.QueueDeclare(queue, true, false, false, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
 	self.queue = queue
 	return self

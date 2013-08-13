@@ -12,19 +12,23 @@ import (
 	"strings"
 )
 
-var uri string
-var queue string
-var Cfg *goconfig.ConfigFile
-var user = flag.String("u", "gogix", "username")
-var debug = flag.Bool("d", false, "debug")
+var (
+	queue string
+	Cfg   *goconfig.ConfigFile
+	user  = flag.String("u", "gogix", "username")
+	debug = flag.Bool("d", false, "debug")
+)
 
 func main() {
 	flag.Parse()
 	var err error
+
 	config_file := os.Getenv("GOGIX_CONF")
 	if strings.TrimSpace(config_file) == "" {
 		config_file = "/etc/gogix/gogix.conf"
 	}
+
+	var uri string
 
 	Cfg, err = goconfig.ReadConfigFile(config_file)
 	utils.CheckPanic(err, "File not found")
@@ -42,28 +46,35 @@ func main() {
 	l, err := net.ListenUDP("udp", addr)
 	utils.CheckPanic(err, fmt.Sprintf("Unable to bind %s", addr))
 
+	var conn broker.Connection
+	conn = conn.Dial(uri)
+	if *debug == true {
+		fmt.Printf("Connecting to Broker %s\n", uri)
+	}
+
 	for {
 		recv := make([]byte, 1024)
 		_, _, err := l.ReadFromUDP(recv)
 		utils.CheckPanic(err, "Problem receiving data")
-		go handle_data(string(recv), message_ttl)
+		go handle_data(string(recv), message_ttl, conn)
 	}
 }
 
-func handle_data(data string, message_ttl string) {
+func handle_data(data string, message_ttl string, conn broker.Connection) {
 	parsed := syslog.ParseLog(data)
-	var conn broker.Connection
+	var c broker.Connection
+
 	if *debug == true {
 		fmt.Printf("Received log %s\n", data)
-		fmt.Printf("Connecting to Broker %s\n", uri)
 	}
-	conn = conn.Dial(uri)
+
 	if *debug == true {
 		fmt.Printf("Setup queue %s\n", queue)
 	}
-	conn = conn.SetupBroker(queue, message_ttl)
+
+	c = conn.SetupBroker(queue, message_ttl)
 	if *debug == true {
 		fmt.Printf("Sending data %s\n", parsed)
 	}
-	conn.Send(parsed)
+	c.Send(parsed)
 }
