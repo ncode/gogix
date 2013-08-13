@@ -15,7 +15,7 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC=gogix             # Introduce a short description here
 NAME=gogix             # Introduce the short server's name here
-DAEMON=/usr/sbin/gogix-server # Introduce the server's location here
+DAEMON=/usr/sbin/gogix # Introduce the server's location here
 DAEMON_ARGS=""                # Arguments to run the daemon with
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
