@@ -1,5 +1,5 @@
 # gogix - Transports your local syslog to Graylog2 via AMQP
-* gogix is a <a href="https://github.com/ncode/gogix">gogix</a> port to Go
+* gogix is a <a href="https://github.com/ncode/logix">logix</a> port to Go
 * http://graylog2.org/about
 
 ## Why should I use it?
