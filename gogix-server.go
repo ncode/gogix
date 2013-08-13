@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/ncode/gogix/broker"
-	"github.com/ncode/gogix/syslog"
-	"github.com/ncode/gogix/util"
 	"flag"
 	"fmt"
 	"github.com/msbranco/goconfig"
+	"github.com/ncode/gogix/broker"
+	"github.com/ncode/gogix/queue"
+	"github.com/ncode/gogix/syslog"
+	"github.com/ncode/gogix/util"
 	"net"
 	"os"
 	"strings"
@@ -37,10 +38,8 @@ func main() {
 	util.CheckPanic(err, "Unable to get transport from gogix.conf")
 	message_ttl, err := Cfg.GetInt64("transport", "message_ttl")
 	util.CheckPanic(err, "Unable to get message_ttl from gogix.conf")
-
 	addr, err := net.ResolveUDPAddr("udp", bind_addr)
 	util.CheckPanic(err, "Unable to resolve bind address")
-
 	l, err := net.ListenUDP("udp", addr)
 	util.CheckPanic(err, fmt.Sprintf("Unable to bind %s", addr))
 
