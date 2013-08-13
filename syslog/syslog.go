@@ -9,12 +9,12 @@ import (
 )
 
 type Parser struct {
-	host          string
-	timestamp     int64
-	facility      string
-	level         string
-	version       float32
-	short_message string
+	Host          string
+	Timestamp     float64
+	Facility      string
+	Level         string
+	Version       float64
+	Short_message string
 }
 
 var Severity = []string{"emerg", "alert", "crit", "err", "warn", "notice", "info", "debug"}
@@ -28,18 +28,19 @@ var LvlRegex = regexp.MustCompile("^<(.+?)>([A-Za-z]{3} .*)")
 func ParseLog(line string) Parser {
 	parsed := Parser{}
 	now := time.Now()
-	parsed.timestamp = now.Unix()
-	parsed.version = 1.0
+	parsed.Timestamp = float64(now.Unix())
+	parsed.Version = 1.0
 	lvl := LvlRegex.FindStringSubmatch(line)
 	if len(lvl) >= 2 {
 		i, err := strconv.Atoi(lvl[1])
 		utils.Check(err, fmt.Sprintf("Unable to convert %s to int", i))
-		parsed.facility = Facility[i/8]
-		parsed.level = Severity[i%8]
-		parsed.short_message = lvl[2]
+		parsed.Facility = Facility[i/8]
+		parsed.Level = Severity[i%8]
+		parsed.Short_message = lvl[2]
+	} else {
+		parsed.Facility = "syslog"
+		parsed.Level = "info"
+		parsed.Short_message = line
 	}
-	parsed.facility = "syslog"
-	parsed.level = "info"
-	parsed.short_message = line
 	return parsed
 }
