@@ -44,7 +44,7 @@ func (self Connection) Send(parsed syslog.Parser) {
 		Expiration:   self.expiration,
 	}
 
-	err = self.pub.Publish("", self.queue, false, false, msg)
+	err = self.pub.Publish(self.queue, self.queue, false, false, msg)
 	utils.Check(err, "Unable to publish message")
 }
 
