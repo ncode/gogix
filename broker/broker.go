@@ -2,7 +2,6 @@ package broker
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/ncode/gogix/syslog"
 	"github.com/ncode/gogix/utils"
 	"github.com/streadway/amqp"
