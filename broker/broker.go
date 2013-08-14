@@ -31,6 +31,9 @@ func (self Connection) SetupBroker(queue string, message_ttl string) Connection 
 	utils.CheckPanic(err, "Unable to declare queue")
 	_, err = self.pub.QueueDeclare(queue, true, false, false, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
+	err = self.pub.QueueBind(queue, "", queue, false, nil)
+	utils.CheckPanic(err, "Unable to declare queue")
+
 	self.queue = queue
 	return self
 }
