@@ -23,10 +23,12 @@ func (self Connection) Dial(uri string) Connection {
 }
 
 func (self Connection) SetupBroker(queue string, message_ttl string) Connection {
+	self.expiration = message_ttl
 	pub, err := self.conn.Channel()
 	utils.CheckPanic(err, "Unable to acquire channel")
 	self.pub = pub
-	self.expiration = message_ttl
+	err = self.pub.ExchangeDeclare(queue, "direct", false, true, false, false, nil)
+	utils.CheckPanic(err, "Unable to declare queue")
 	_, err = self.pub.QueueDeclare(queue, true, false, false, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
 	self.queue = queue
