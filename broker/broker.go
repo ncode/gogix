@@ -27,7 +27,7 @@ func (self Connection) SetupBroker(queue string, message_ttl string) Connection 
 	pub, err := self.conn.Channel()
 	utils.CheckPanic(err, "Unable to acquire channel")
 	self.pub = pub
-	err = self.pub.ExchangeDeclare(queue, "direct", false, true, false, false, nil)
+	err = self.pub.ExchangeDeclare(queue, "direct", true, true, false, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
 	_, err = self.pub.QueueDeclare(queue, true, false, false, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
