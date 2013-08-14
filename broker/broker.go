@@ -31,7 +31,7 @@ func (self Connection) SetupBroker(queue string, message_ttl string) Connection 
 	utils.CheckPanic(err, "Unable to declare queue")
 	_, err = self.pub.QueueDeclare(queue, true, false, false, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
-	err = self.pub.QueueBind(queue, "", queue, false, nil)
+	err = self.pub.QueueBind(queue, queue, queue, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
 
 	self.queue = queue
@@ -49,7 +49,7 @@ func (self Connection) Send(parsed syslog.Parser) {
 		Expiration:   self.expiration,
 	}
 
-	err = self.pub.Publish(self.queue, self.queue, false, false, msg)
+	err = self.pub.Publish("", self.queue, false, false, msg)
 	utils.Check(err, "Unable to publish message")
 }
 
