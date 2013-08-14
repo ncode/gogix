@@ -4,6 +4,7 @@ GOPATH=$(CURDIR)/debian/go-build
 
 clean:
 	rm --preserve-root -rf $(DESTDIR)
+	rm --preserve-root -rf $(GOPATH)
 
 build:
 	GOPATH=$(GOPATH) go get github.com/ncode/gogix
