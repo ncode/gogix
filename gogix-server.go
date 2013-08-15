@@ -56,9 +56,9 @@ func main() {
 
 	for {
 		recv := make([]byte, 1024)
-		_, _, err := l.ReadFromUDP(recv)
+		_, remote_addr, err := l.ReadFromUDP(recv)
 		utils.Check(err, "Problem receiving data")
-		go handle_data(string(recv), message_ttl, conn, l.RemoteAddr())
+		go handle_data(string(recv), message_ttl, conn, remote_addr.IP)
 	}
 
 	defer conn.Close()

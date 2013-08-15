@@ -32,9 +32,14 @@ func ParseLog(line string, remote_addr string) Parser {
 	now := time.Now()
 	parsed.Timestamp = now.Unix()
 	parsed.Version = 1.0
-	hostname, err := os.Hostname()
-	parsed.Host = hostname
-	utils.Check(err, fmt.Sprintf("Unable to get my hostname"))
+	if strings.Contains(remote_addr, "127.0.0.1") {
+		hostname, err := os.Hostname()
+		utils.CheckPanic(err, fmt.Sprintf("Unable to get my hostname"))
+		parsed.Host = hostname
+	} else {
+		parsed.Host = remote_addr
+	}
+
 	lvl := LvlRegex.FindStringSubmatch(line)
 	if len(lvl) >= 2 {
 		i, err := strconv.Atoi(lvl[1])
