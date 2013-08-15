@@ -45,11 +45,11 @@ func (self Connection) Send(parsed syslog.Parser) {
 		DeliveryMode: amqp.Persistent,
 		Timestamp:    time.Now(),
 		ContentType:  "text/plain",
-		Body:         encoded,
+		Body:         []byte(encoded),
 		Expiration:   self.expiration,
 	}
 
-	err = self.pub.Publish("", self.queue, false, false, msg)
+	err = self.pub.Publish(self.queue, self.queue, false, false, msg)
 	utils.Check(err, "Unable to publish message")
 }
 

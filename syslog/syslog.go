@@ -3,6 +3,7 @@ package syslog
 import (
 	"fmt"
 	"github.com/ncode/gogix/utils"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -26,11 +27,14 @@ var Facility = []string{"kern", "user", "mail", "daemon", "auth", "syslog", "lpr
 
 var LvlRegex = regexp.MustCompile("^<(.+?)>([A-Za-z]{3} .*)")
 
-func ParseLog(line string) Parser {
+func ParseLog(line string, remote_addr string) Parser {
 	parsed := Parser{}
 	now := time.Now()
 	parsed.Timestamp = now.Unix()
 	parsed.Version = 1.0
+	hostname, err := os.Hostname()
+	parsed.Host = hostname
+	utils.Check(err, fmt.Sprintf("Unable to get my hostname"))
 	lvl := LvlRegex.FindStringSubmatch(line)
 	if len(lvl) >= 2 {
 		i, err := strconv.Atoi(lvl[1])

@@ -58,18 +58,18 @@ func main() {
 		recv := make([]byte, 1024)
 		_, _, err := l.ReadFromUDP(recv)
 		utils.Check(err, "Problem receiving data")
-		go handle_data(string(recv), message_ttl, conn)
+		go handle_data(string(recv), message_ttl, conn, l.RemoteAddr())
 	}
 
 	defer conn.Close()
 }
 
-func handle_data(data string, message_ttl string, conn broker.Connection) {
+func handle_data(data string, message_ttl string, conn broker.Connection, remote_addr string) {
 	if *debug == true {
 		fmt.Printf("Received log %s\n", data)
 	}
 
-	parsed := syslog.ParseLog(data)
+	parsed := syslog.ParseLog(data, remote_addr)
 
 	if *debug == true {
 		fmt.Printf("Sending data %s\n", parsed)
