@@ -70,7 +70,7 @@ func handle_data(data string, message_ttl string, conn broker.Connection, remote
 		fmt.Printf("Received log %s\n", data)
 	}
 
-	parsed := syslog.ParseLog(data, remote_addr)
+	parsed := syslog.Graylog2ParseLog(data, remote_addr)
 
 	if *debug == true {
 		fmt.Printf("Sending data %s\n", parsed)
