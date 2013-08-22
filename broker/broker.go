@@ -37,19 +37,38 @@ var (
 	max_retries = 40
 )
 
-func (c Connection) SetupBroker() Connection {
+func (c Connection) SetupBroker() (Connection, error) {
 	conn, err := amqp.Dial(c.Uri)
-	utils.CheckPanic(err, "Unable to connect to broker")
+	if err != nil {
+		utils.Check(err, "Unable to connect to broker")
+		return c, err
+	}
 	c.conn = conn
+
 	pub, err := c.conn.Channel()
-	utils.CheckPanic(err, "Unable to acquire channel")
+	if err != nil {
+		utils.Check(err, "Unable to acquire channel")
+		return c, err
+	}
+
 	c.pub = pub
 	err = c.pub.ExchangeDeclare(c.Queue, "direct", true, true, false, false, nil)
-	utils.CheckPanic(err, "Unable to declare queue")
+	if err != nil {
+		utils.Check(err, "Unable to declare queue")
+		return c, err
+	}
+
 	_, err = c.pub.QueueDeclare(c.Queue, true, false, false, false, nil)
-	utils.CheckPanic(err, "Unable to declare queue")
+	if err != nil {
+		utils.Check(err, "Unable to declare queue")
+		return c, err
+	}
+
 	err = c.pub.QueueBind(c.Queue, c.Queue, c.Queue, false, nil)
-	utils.CheckPanic(err, "Unable to declare queue")
+	if err != nil {
+		utils.Check(err, "Unable to declare queue")
+		return c, err
+	}
 
 	return c
 }
