@@ -75,6 +75,10 @@ func (c Connection) SetupBroker() (Connection, error) {
 
 func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 	encoded, err := json.Marshal(parsed)
+	if err != nil {
+		return err
+	}
+
 	utils.Check(err, "Unable to encode json")
 	msg := amqp.Publishing{
 		DeliveryMode: amqp.Persistent,

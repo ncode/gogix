@@ -47,7 +47,7 @@ func check(err error, message string, _panic bool) {
 		if s_err != nil {
 			log.Fatalln("Unable to write syslog message")
 		}
-		_log.Warning(msg)
+		_log.Err(msg)
 		defer _log.Close()
 		log.Fatalln(msg)
 		if _panic {
