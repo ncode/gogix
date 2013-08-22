@@ -68,7 +68,7 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 	err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
 	if err != nil {
 		utils.Check(err, "Unable to publish message")
-		time.Sleep(1000 * time.Millisecond)
+		time.Sleep(time.Second)
 		c = c.SetupBroker()
 	}
 

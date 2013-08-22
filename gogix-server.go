@@ -38,6 +38,7 @@ var (
 func main() {
 	flag.Parse()
 	var err error
+	var conn broker.Connection
 
 	config_file := os.Getenv("GOGIX_CONF")
 	if strings.TrimSpace(config_file) == "" {
@@ -49,38 +50,34 @@ func main() {
 
 	bind_addr, err := Cfg.GetString("server", "bind_addr")
 	utils.CheckPanic(err, "Unable to get bind_addr from gogix.conf")
-	queue, err := Cfg.GetString("transport", "queue")
+	conn.Queue, err = Cfg.GetString("transport", "queue")
 	utils.CheckPanic(err, "Unable to get queue from gogix.conf")
-	uri, err := Cfg.GetString("transport", "uri")
+	conn.Uri, err = Cfg.GetString("transport", "uri")
 	utils.CheckPanic(err, "Unable to get transport from gogix.conf")
-	message_ttl, err := Cfg.GetString("transport", "message_ttl")
+	conn.Expiration, err = Cfg.GetString("transport", "message_ttl")
 	utils.CheckPanic(err, "Unable to get message_ttl from gogix.conf")
 	addr, err := net.ResolveUDPAddr("udp", bind_addr)
 	utils.CheckPanic(err, "Unable to resolve bind address")
 	l, err := net.ListenUDP("udp", addr)
 	utils.CheckPanic(err, fmt.Sprintf("Unable to bind %s", addr))
 
-uri string, queue string, message_ttl string
-
-	var conn *broker.Connection
 	if *debug == true {
-		fmt.Printf("Setting-Up Broker %s\n", uri)
+		fmt.Printf("Setting-Up Broker %s\n", conn.Uri)
 	}
-	conn = conn.SetupBroker(queue, message_ttl)
-	conn.
+	conn = conn.SetupBroker()
 
 	for {
 		recv := make([]byte, 1024)
 		_, remote_addr, err := l.ReadFromUDP(recv)
 		utils.Check(err, "Problem receiving data")
 		ip := fmt.Sprintf("%s", remote_addr.IP)
-		go handle_data(string(recv), message_ttl, conn, ip)
+		go handle_data(string(recv), conn, ip)
 	}
 
 	defer conn.Close()
 }
 
-func handle_data(data string, conn &broker.Connection, remote_addr string) {
+func handle_data(data string, conn broker.Connection, remote_addr string) {
 	if *debug == true {
 		fmt.Printf("Received log %s\n", data)
 	}
