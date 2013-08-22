@@ -60,16 +60,14 @@ func main() {
 	l, err := net.ListenUDP("udp", addr)
 	utils.CheckPanic(err, fmt.Sprintf("Unable to bind %s", addr))
 
-	var conn broker.Connection
-	if *debug == true {
-		fmt.Printf("Connecting to Broker %s\n", uri)
-	}
-	conn = conn.Dial(uri)
+uri string, queue string, message_ttl string
 
+	var conn *broker.Connection
 	if *debug == true {
-		fmt.Printf("Setting-up queue %s\n", queue)
+		fmt.Printf("Setting-Up Broker %s\n", uri)
 	}
 	conn = conn.SetupBroker(queue, message_ttl)
+	conn.
 
 	for {
 		recv := make([]byte, 1024)
@@ -82,7 +80,7 @@ func main() {
 	defer conn.Close()
 }
 
-func handle_data(data string, message_ttl string, conn broker.Connection, remote_addr string) {
+func handle_data(data string, conn &broker.Connection, remote_addr string) {
 	if *debug == true {
 		fmt.Printf("Received log %s\n", data)
 	}

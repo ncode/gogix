@@ -28,34 +28,33 @@ import (
 type Connection struct {
 	conn       *amqp.Connection
 	pub        *amqp.Channel
-	queue      string
-	expiration string
+	Queue      string
+	Expiration string
+	Uri        string
 }
 
-func (self Connection) Dial(uri string) Connection {
-	conn, err := amqp.Dial(uri)
+var (
+	max_retries = 40
+)
+
+func (c Connection) SetupBroker() Connection {
+	conn, err := amqp.Dial(c.Uri)
 	utils.CheckPanic(err, "Unable to connect to broker")
-	self.conn = conn
-	return self
-}
-
-func (self Connection) SetupBroker(queue string, message_ttl string) Connection {
-	self.expiration = message_ttl
-	pub, err := self.conn.Channel()
+	c.conn = conn
+	pub, err := c.conn.Channel()
 	utils.CheckPanic(err, "Unable to acquire channel")
-	self.pub = pub
-	err = self.pub.ExchangeDeclare(queue, "direct", true, true, false, false, nil)
+	c.pub = pub
+	err = c.pub.ExchangeDeclare(c.Queue, "direct", true, true, false, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
-	_, err = self.pub.QueueDeclare(queue, true, false, false, false, nil)
+	_, err = c.pub.QueueDeclare(c.Queue, true, false, false, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
-	err = self.pub.QueueBind(queue, queue, queue, false, nil)
+	err = c.pub.QueueBind(c.Queue, c.Queue, c.Queue, false, nil)
 	utils.CheckPanic(err, "Unable to declare queue")
 
-	self.queue = queue
-	return self
+	return c
 }
 
-func (self Connection) Send(parsed syslog.Graylog2Parsed) {
+func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 	encoded, err := json.Marshal(parsed)
 	utils.Check(err, "Unable to encode json")
 	msg := amqp.Publishing{
@@ -63,13 +62,19 @@ func (self Connection) Send(parsed syslog.Graylog2Parsed) {
 		Timestamp:    time.Now(),
 		ContentType:  "text/plain",
 		Body:         []byte(encoded),
-		Expiration:   self.expiration,
+		Expiration:   c.Expiration,
 	}
 
-	err = self.pub.Publish(self.queue, self.queue, false, false, msg)
-	utils.Check(err, "Unable to publish message")
+	err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
+	if err != nil {
+		utils.Check(err, "Unable to publish message")
+		time.Sleep(1000 * time.Millisecond)
+		c = c.SetupBroker()
+	}
+
+	return err
 }
 
-func (self Connection) Close() {
-	defer self.conn.Close()
+func (c *Connection) Close() {
+	defer c.conn.Close()
 }
