@@ -49,7 +49,7 @@ func check(err error, message string, _panic bool) {
 		}
 		_log.Err(msg)
 		defer _log.Close()
-		log.Fatalln(msg)
+		log.Println(msg)
 		if _panic {
 			panic(msg)
 		}
