@@ -70,7 +70,7 @@ func (c Connection) SetupBroker() (Connection, error) {
 		return c, err
 	}
 
-	return c
+	return c, err
 }
 
 func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
@@ -84,11 +84,15 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 		Expiration:   c.Expiration,
 	}
 
-	err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
-	if err != nil {
-		utils.Check(err, "Unable to publish message")
-		time.Sleep(time.Second)
-		c = c.SetupBroker()
+	for i := 0; i <= max_retries; i++ {
+		err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
+		if err != nil {
+			utils.Check(err, "Unable to publish message")
+			time.Sleep(time.Second)
+			c, err = c.SetupBroker()
+		} else {
+			break
+		}
 	}
 
 	return err

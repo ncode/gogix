@@ -64,7 +64,7 @@ func main() {
 	if *debug == true {
 		fmt.Printf("Setting-Up Broker %s\n", conn.Uri)
 	}
-	conn = conn.SetupBroker()
+	conn, err = conn.SetupBroker()
 
 	for {
 		recv := make([]byte, 1024)
