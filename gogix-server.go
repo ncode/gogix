@@ -27,6 +27,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"time"
 )
 
 var (
@@ -69,9 +70,13 @@ func main() {
 	for {
 		recv := make([]byte, 1024)
 		_, remote_addr, err := l.ReadFromUDP(recv)
-		utils.Check(err, "Problem receiving data")
+		utils.CheckPanic(err, "Problem receiving data")
 		ip := fmt.Sprintf("%s", remote_addr.IP)
 		go handle_data(string(recv), conn, ip)
+		if !conn.IsConnected() {
+			conn, err = conn.SetupBroker()
+			time.Sleep(5 * time.Second)
+		}
 	}
 
 	defer conn.Close()

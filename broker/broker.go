@@ -26,11 +26,12 @@ import (
 )
 
 type Connection struct {
-	conn       *amqp.Connection
-	pub        *amqp.Channel
-	Queue      string
-	Expiration string
-	Uri        string
+	conn         *amqp.Connection
+	pub          *amqp.Channel
+	is_connected bool
+	Queue        string
+	Expiration   string
+	Uri          string
 }
 
 var (
@@ -69,6 +70,7 @@ func (c Connection) SetupBroker() (Connection, error) {
 		utils.Check(err, "Unable to declare queue")
 		return c, err
 	}
+	c.is_connected = true
 
 	return c, err
 }
@@ -88,20 +90,19 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 		Expiration:   c.Expiration,
 	}
 
-	for i := 0; i <= max_retries; i++ {
-		err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
-		if err != nil {
-			utils.Check(err, "Unable to publish message")
-			time.Sleep(time.Second)
-			c, err = c.SetupBroker()
-		} else {
-			break
-		}
+	err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
+	if err != nil {
+		utils.Check(err, "Unable to publish message")
+		c.is_connected = false
 	}
 
 	return err
 }
 
-func (c *Connection) Close() {
+func (c Connection) IsConnected() bool {
+	return c.is_connected
+}
+
+func (c Connection) Close() {
 	defer c.conn.Close()
 }

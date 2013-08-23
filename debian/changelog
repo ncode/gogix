@@ -1,11 +1,17 @@
-gogix (0.0.1-29) stable; urgency=low
+gogix (0.1.0-2) stable; urgency=low
 
-  * Non-maintainer upload.
+   * commit e441ba9750c102373dc6d73d93ca29fba09a9817
+   * Author: Juliano Martinez <juliano@martinez.io>
+   * Date:   Thu Aug 22 18:03:15 2013 -0300
+   *     chage log type
 
- -- root <root@eb1e00f1cc95>  Thu, 22 Aug 2013 16:49:03 +0000
+ -- Juliano Martinez <juliano.martinez@locaweb.com.br>  Thu, 22 Aug 2013 21:04:54 +0000
 
-gogix (0.0.1) unstable; urgency=low
+gogix (0.1.0-1) stable; urgency=low
 
-  * Initial Release.
+   * commit 4f41db1c0733e37a4faa6719bc9d70ed1f0da0c7
+   * Author: Juliano Martinez <juliano@martinez.io>
+   * Date:   Thu Aug 22 17:48:36 2013 -0300
+   *     fixing reconnect
 
- -- Juliano Martinez <juliano.martinez@locaweb.com.br>  Tue, 25 Sep 2012 13:50:10 -0300
+ -- Juliano Martinez <juliano.martinez@locaweb.com.br>  Thu, 22 Aug 2013 20:52:25 +0000
