@@ -72,10 +72,12 @@ func main() {
 		_, remote_addr, err := l.ReadFromUDP(recv)
 		utils.CheckPanic(err, "Problem receiving data")
 		ip := fmt.Sprintf("%s", remote_addr.IP)
-		go handle_data(string(recv), conn, ip)
-		if !conn.IsConnected() {
+
+		if conn.IsConnected() {
+			go handle_data(string(recv), conn, ip)
+		} else {
 			conn, err = conn.SetupBroker()
-			time.Sleep(5 * time.Second)
+			time.Sleep(20 * time.Second)
 		}
 	}
 

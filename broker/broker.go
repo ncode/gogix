@@ -55,7 +55,7 @@ func (c Connection) SetupBroker() (Connection, error) {
 	c.pub = pub
 	err = c.pub.ExchangeDeclare(c.Queue, "direct", true, true, false, false, nil)
 	if err != nil {
-		utils.Check(err, "Unable to declare queue")
+		utils.Check(err, "Unable to declare exchange")
 		return c, err
 	}
 
@@ -67,7 +67,7 @@ func (c Connection) SetupBroker() (Connection, error) {
 
 	err = c.pub.QueueBind(c.Queue, c.Queue, c.Queue, false, nil)
 	if err != nil {
-		utils.Check(err, "Unable to declare queue")
+		utils.Check(err, "Unable to bind queue")
 		return c, err
 	}
 	c.is_connected = true
