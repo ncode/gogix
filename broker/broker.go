@@ -34,10 +34,6 @@ type Connection struct {
 	Uri          string
 }
 
-var (
-	max_retries = 40
-)
-
 func (c Connection) SetupBroker() (Connection, error) {
 	conn, err := amqp.Dial(c.Uri)
 	if err != nil {
