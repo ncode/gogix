@@ -1,3 +1,10 @@
+gogix (0.1.0-3) stable; urgency=low
+
+   * Date:   Thu Aug 22 17:48:36 2013 -0300
+   *     fixing reconnect
+
+ -- Juliano Martinez <juliano.martinez@locaweb.com.br>  Fri, 23 Aug 2013 19:35:22 +0000
+
 gogix (0.1.0-2) stable; urgency=low
 
    * commit e441ba9750c102373dc6d73d93ca29fba09a9817
