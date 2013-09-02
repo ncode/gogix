@@ -27,7 +27,6 @@ import (
 	"net"
 	"os"
 	"strings"
-	"time"
 )
 
 var (
@@ -66,6 +65,7 @@ func main() {
 		fmt.Printf("Setting-Up Broker %s\n", conn.Uri)
 	}
 	conn, err = conn.SetupBroker()
+	bc := conn.NotifyClose()
 
 	for {
 		recv := make([]byte, 1024)
@@ -73,12 +73,9 @@ func main() {
 		utils.CheckPanic(err, "Problem receiving data")
 		ip := fmt.Sprintf("%s", remote_addr.IP)
 
-		if conn.IsConnected() {
-			go handle_data(string(recv), conn, ip)
-		} else {
-			conn, err = conn.SetupBroker()
-			time.Sleep(20 * time.Second)
-		}
+		go handle_data(string(recv), conn, ip)
+		status := <-bc
+		fmt.Println(status)
 	}
 
 	defer conn.Close()
