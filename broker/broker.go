@@ -97,15 +97,20 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 	return err
 }
 
-func (c *Connection) NotifyClose() {
+func (c *Connection) NotifyClose() (err error) {
 	bc := make(chan *amqp.Error)
 	c.conn.NotifyClose(bc)
 	for {
 		b := <-bc
 		if b != nil {
-			var err error
-			c.conn, c.pub, err = setup(c.Uri, c.Queue)
-			c.conn.NotifyClose(bc)
+			for {
+				c.conn, c.pub, err = setup(c.Uri, c.Queue)
+				if err == nil {
+					c.conn.NotifyClose(bc)
+					break
+					time.Sleep(2 * time.Second)
+				}
+			}
 		}
 	}
 }
