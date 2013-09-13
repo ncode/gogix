@@ -23,6 +23,7 @@ import (
 	"github.com/ncode/gogix/syslog"
 	"github.com/ncode/gogix/utils"
 	"github.com/streadway/amqp"
+	"sync"
 	"time"
 )
 
@@ -91,8 +92,8 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 		Expiration:   c.Expiration,
 	}
 
-	//c.mu.Lock()
-	//defer c.mu.Unlock()
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
 	if err != nil {
 		utils.Check(err, "Unable to publish message")
@@ -109,14 +110,14 @@ func (c *Connection) NotifyClose() (err error) {
 		if b != nil {
 			for {
 				fmt.Println("meh")
-				//c.mu.Lock()
+				c.mu.Lock()
 				c.conn, c.pub, err = setup(c.Uri, c.Queue)
 				if err == nil {
 					c.conn.NotifyClose(bc)
 					break
 				}
 				time.Sleep(2 * time.Second)
-				//c.mu.Unlock()
+				c.mu.Unlock()
 			}
 		}
 	}
