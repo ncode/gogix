@@ -111,10 +111,10 @@ func (c *Connection) NotifyClose() (err error) {
 				c.conn, c.pub, err = setup(c.Uri, c.Queue)
 				if err == nil {
 					c.conn.NotifyClose(bc)
-					time.Sleep(2 * time.Second)
 					mu.Unlock()
 					break
 				}
+				time.Sleep(2 * time.Second)
 			}
 		}
 	}
