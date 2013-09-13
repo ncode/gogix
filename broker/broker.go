@@ -106,15 +106,15 @@ func (c *Connection) NotifyClose() (err error) {
 	for {
 		b := <-bc
 		if b != nil {
-			mu.Lock()
 			for {
+				mu.Lock()
 				c.conn, c.pub, err = setup(c.Uri, c.Queue)
 				if err == nil {
 					c.conn.NotifyClose(bc)
-					mu.Unlock()
 					break
 				}
 				time.Sleep(2 * time.Second)
+				mu.Unlock()
 			}
 		}
 	}
