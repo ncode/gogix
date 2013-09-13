@@ -31,6 +31,7 @@ type Connection struct {
 	Queue      string
 	Expiration string
 	Uri        string
+	mu         sync.RWMutex
 }
 
 func setup(uri, queue string) (*amqp.Connection, *amqp.Channel, error) {
@@ -89,6 +90,8 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 		Expiration:   c.Expiration,
 	}
 
+	mu.Lock()
+	defer mu.Unlock()
 	err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
 	if err != nil {
 		utils.Check(err, "Unable to publish message")
@@ -103,12 +106,14 @@ func (c *Connection) NotifyClose() (err error) {
 	for {
 		b := <-bc
 		if b != nil {
+			mu.Lock()
 			for {
 				c.conn, c.pub, err = setup(c.Uri, c.Queue)
 				if err == nil {
 					c.conn.NotifyClose(bc)
-					break
 					time.Sleep(2 * time.Second)
+					mu.Unlock()
+					break
 				}
 			}
 		}
