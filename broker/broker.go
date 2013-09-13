@@ -33,40 +33,45 @@ type Connection struct {
 	Uri        string
 }
 
-func (c Connection) SetupBroker() (Connection, error) {
-	conn, err := amqp.Dial(c.Uri)
+func setup(uri, queue string) (*amqp.Connection, *amqp.Channel, error) {
+	conn, err := amqp.Dial(uri)
 	if err != nil {
 		utils.Check(err, "Unable to connect to broker")
-		return c, err
+		return nil, nil, err
 	}
-	c.conn = conn
 
-	pub, err := c.conn.Channel()
+	pub, err := conn.Channel()
 	if err != nil {
 		utils.Check(err, "Unable to acquire channel")
-		return c, err
+		return nil, nil, err
 	}
 
-	c.pub = pub
-	err = c.pub.ExchangeDeclare(c.Queue, "direct", true, true, false, false, nil)
+	err = pub.ExchangeDeclare(queue, "direct", true, true, false, false, nil)
 	if err != nil {
 		utils.Check(err, "Unable to declare exchange")
-		return c, err
+		return nil, nil, err
 	}
 
-	_, err = c.pub.QueueDeclare(c.Queue, true, false, false, false, nil)
+	_, err = pub.QueueDeclare(queue, true, false, false, false, nil)
 	if err != nil {
 		utils.Check(err, "Unable to declare queue")
-		return c, err
+		return nil, nil, err
 	}
 
-	err = c.pub.QueueBind(c.Queue, c.Queue, c.Queue, false, nil)
+	err = pub.QueueBind(queue, queue, queue, false, nil)
 	if err != nil {
 		utils.Check(err, "Unable to bind queue")
-		return c, err
+		return nil, nil, err
 	}
 
-	return c, err
+	return conn, pub, nil
+}
+
+func (c Connection) SetupBroker() Connection {
+	var err error
+	c.conn, c.pub, err = setup(c.Uri, c.Queue)
+	utils.CheckPanic(err, "Problem acquiring connection")
+	return c
 }
 
 func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
@@ -92,10 +97,17 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 	return err
 }
 
-func (c Connection) NotifyClose() chan *amqp.Error {
+func (c *Connection) NotifyClose() {
 	bc := make(chan *amqp.Error)
 	c.conn.NotifyClose(bc)
-	return bc
+	for {
+		b := <-bc
+		if b != nil {
+			var err error
+			c.conn, c.pub, err = setup(c.Uri, c.Queue)
+			c.conn.NotifyClose(bc)
+		}
+	}
 }
 
 func (c Connection) Close() {

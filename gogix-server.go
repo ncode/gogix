@@ -64,8 +64,7 @@ func main() {
 	if *debug == true {
 		fmt.Printf("Setting-Up Broker %s\n", conn.Uri)
 	}
-	conn, err = conn.SetupBroker()
-	bc := conn.NotifyClose()
+	conn = conn.SetupBroker()
 
 	for {
 		recv := make([]byte, 1024)
@@ -74,7 +73,6 @@ func main() {
 		ip := fmt.Sprintf("%s", remote_addr.IP)
 
 		go handle_data(string(recv), conn, ip)
-		status := <-bc
 		fmt.Println(status)
 	}
 
