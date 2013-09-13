@@ -19,6 +19,7 @@ package broker
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ncode/gogix/syslog"
 	"github.com/ncode/gogix/utils"
 	"github.com/streadway/amqp"
@@ -107,6 +108,7 @@ func (c *Connection) NotifyClose() (err error) {
 		b := <-bc
 		if b != nil {
 			for {
+				fmt.Println("meh")
 				//c.mu.Lock()
 				c.conn, c.pub, err = setup(c.Uri, c.Queue)
 				if err == nil {
