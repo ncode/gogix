@@ -7,9 +7,7 @@ clean:
 	rm --preserve-root -rf $(GOPATH)
 
 build:
-	GOPATH=$(GOPATH) go get github.com/ncode/gogix
-	GOPATH=$(GOPATH) go get github.com/streadway/amqp
-	GOPATH=$(GOPATH) go get github.com/msbranco/goconfig
+	GOPATH=$(GOPATH) go get -v github.com/ncode/gogix/...
 	GOPATH=$(GOPATH) go build -o gogix
 
 install:
