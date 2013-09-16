@@ -84,9 +84,3 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
 ## Depends:
 * amqp - https://github.com/streadway/amqp
 * gocofig - github.com/msbranco/goconfig
-
-## Todo
-* would benefit of an internal backlog queue
-
-## Status
-* Full ported
