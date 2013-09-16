@@ -92,8 +92,9 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 		Expiration:   c.Expiration,
 	}
 
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	//c.mu.Lock()
+	//defer c.mu.Unlock()
+	fmt.Println("lalala")
 	err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
 	if err != nil {
 		utils.Check(err, "Unable to publish message")
@@ -108,14 +109,17 @@ func (c *Connection) NotifyClose() (err error) {
 	for {
 		b := <-bc
 		if b != nil {
-			fmt.Println("meh")
-			c.mu.Lock()
-			c.conn, c.pub, err = setup(c.Uri, c.Queue)
-			if err == nil {
-				c.conn.NotifyClose(bc)
+			for {
+				fmt.Println("meh")
+				//c.mu.Lock()
+				c.conn, c.pub, err = setup(c.Uri, c.Queue)
+				if err == nil {
+					c.conn.NotifyClose(bc)
+					break
+				}
+				time.Sleep(2 * time.Second)
+				//c.mu.Unlock()
 			}
-			time.Sleep(2 * time.Second)
-			c.mu.Unlock()
 		}
 	}
 }

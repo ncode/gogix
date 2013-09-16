@@ -65,15 +65,16 @@ func main() {
 		fmt.Printf("Setting-Up Broker %s\n", conn.Uri)
 	}
 	conn = conn.SetupBroker()
-	go conn.NotifyClose()
+	// go conn.NotifyClose()
 
 	for {
 		recv := make([]byte, 1024)
 		_, remote_addr, err := l.ReadFromUDP(recv)
-		utils.CheckPanic(err, "Problem receiving data")
-		ip := fmt.Sprintf("%s", remote_addr.IP)
-
-		go handle_data(string(recv), conn, ip)
+		utils.Check(err, "Problem receiving data")
+		if err != nil {
+			ip := fmt.Sprintf("%s", remote_addr.IP)
+			go handle_data(string(recv), conn, ip)
+		}
 	}
 
 	defer conn.Close()
