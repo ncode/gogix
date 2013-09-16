@@ -19,7 +19,6 @@ package broker
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/ncode/gogix/syslog"
 	"github.com/ncode/gogix/utils"
 	"github.com/streadway/amqp"
@@ -70,14 +69,13 @@ func setup(uri, queue string) (*amqp.Connection, *amqp.Channel, error) {
 	return conn, pub, nil
 }
 
-func (c Connection) SetupBroker() Connection {
+func (c *Connection) SetupBroker() {
 	var err error
 	c.conn, c.pub, err = setup(c.Uri, c.Queue)
 	utils.CheckPanic(err, "Problem acquiring connection")
-	return c
 }
 
-func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
+func (c *Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 	encoded, err := json.Marshal(parsed)
 	utils.Check(err, "Unable to encode json")
 	if err != nil {
@@ -92,38 +90,39 @@ func (c Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
 		Expiration:   c.Expiration,
 	}
 
-	//c.mu.Lock()
-	//defer c.mu.Unlock()
-	fmt.Println("lalala")
-	err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
-	if err != nil {
-		utils.Check(err, "Unable to publish message")
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.pub != nil {
+		err = c.pub.Publish(c.Queue, c.Queue, false, false, msg)
+		if err != nil {
+			utils.Check(err, "Unable to publish message")
+		}
 	}
 
 	return err
 }
 
-func (c *Connection) NotifyClose() (err error) {
+func (c *Connection) notify_and_reconnect() (err error) {
 	bc := make(chan *amqp.Error)
 	c.conn.NotifyClose(bc)
+	b := <-bc
 	for {
-		b := <-bc
-		if b != nil {
-			for {
-				fmt.Println("meh")
-				//c.mu.Lock()
-				c.conn, c.pub, err = setup(c.Uri, c.Queue)
-				if err == nil {
-					c.conn.NotifyClose(bc)
-					break
-				}
-				time.Sleep(2 * time.Second)
-				//c.mu.Unlock()
+		if c.conn == nil || b != nil {
+			c.conn, c.pub, err = setup(c.Uri, c.Queue)
+			if err == nil {
+				return
 			}
+			time.Sleep(2 * time.Second)
 		}
 	}
 }
 
-func (c Connection) Close() {
+func (c *Connection) ReconnectOnClose() (err error) {
+	for {
+		c.notify_and_reconnect()
+	}
+}
+
+func (c *Connection) Close() {
 	defer c.conn.Close()
 }
