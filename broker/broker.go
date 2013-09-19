@@ -75,7 +75,7 @@ func (c *Connection) SetupBroker() {
 	utils.CheckPanic(err, "Problem acquiring connection")
 }
 
-func (c *Connection) Send(parsed syslog.Graylog2Parsed) (err error) {
+func (c *Connection) Send(parsed *syslog.Graylog2Parsed) (err error) {
 	encoded, err := json.Marshal(parsed)
 	utils.Check(err, "Unable to encode json")
 	if err != nil {

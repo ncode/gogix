@@ -78,7 +78,7 @@ func main() {
 		}
 	}
 
-	defer conn.Close()
+	conn.Close()
 }
 
 func handle_data(data string, conn broker.Connection, remote_addr string) {
@@ -86,10 +86,10 @@ func handle_data(data string, conn broker.Connection, remote_addr string) {
 		fmt.Printf("Received log %s\n", data)
 	}
 
-	parsed := syslog.Graylog2ParseLog(data, remote_addr)
+	parsed := syslog.Graylog2ParseLog(&data, &remote_addr)
 
 	if *debug == true {
 		fmt.Printf("Sending data %s\n", parsed)
 	}
-	conn.Send(parsed)
+	conn.Send(&parsed)
 }

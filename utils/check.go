@@ -28,11 +28,11 @@ var (
 )
 
 func Check(err error, message string) {
-	check(err, message, false)
+	check(&err, message, false)
 }
 
 func CheckPanic(err error, message string) {
-	check(err, message, true)
+	check(&err, message, true)
 }
 
 func Log(message string) {
@@ -41,7 +41,7 @@ func Log(message string) {
 	defer _log.Close()
 }
 
-func check(err error, message string, _panic bool) {
+func check(err *error, message string, _panic bool) {
 	if err != nil {
 		msg := fmt.Sprintf("%s: %s", message, err)
 		if s_err != nil {
