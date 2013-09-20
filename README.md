@@ -18,6 +18,8 @@ concurrency using tcp remote syslog.
 gogix queues your log events on any AMQP Server and you can easy setup
 your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> to consume this queue and index your logs on demand.
 
+<img src="https://raw.github.com/ncode/gogix/master/gogix.jpg">
+
 ## Usage:
 ### Setup your AMQP and Graylog2
 * http://www.rabbitmq.com/getstarted.html
