@@ -59,10 +59,9 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
 ### Building
 
     $ git clone git@github.com:ncode/gogix.git
-    $ cd gogix/src
-    $ go get github.com/streadway/amqp
-    $ go get github.com/msbranco/goconfig
-    $ go build -o gogix-server
+    $ cd gogix
+    $ go get -v .
+    $ go build -o gogix
 
 ### Building package on Debian and Ubuntu
 
@@ -73,7 +72,7 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
 
 ### Running:
 
-    $ Usage: ./gogix-server
+    $ Usage: gogix
     $   -h help
     $   -u username
     $   -d debug
@@ -83,4 +82,4 @@ your <a href="https://github.com/Graylog2/graylog2-server">graylog2-server</a> t
 
 ## Depends:
 * amqp - https://github.com/streadway/amqp
-* gocofig - github.com/msbranco/goconfig
+* gocofig - https://github.com/msbranco/goconfig
